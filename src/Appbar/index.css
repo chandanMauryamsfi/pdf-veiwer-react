@@ -1,0 +1,33 @@
+.appbar{
+    display: flex;
+    justify-content: flex-start;
+    background-color: rgb(41, 13, 66);
+    color: white;
+    align-items: center;
+}
+
+button{
+    background: #ab8181;
+    border: none;
+    border-radius: 24%;
+    height: 24px;
+    color: white;
+    font-size: 18px;
+    font-weight: bolder;
+    outline: none;
+    margin: 0 8px;
+    cursor: pointer;
+  }
+
+button img{
+    padding: 0;
+    height: 23px;
+    cursor: grabbing;
+}
+
+.active{
+    background-color: rgb(49, 41, 41);
+}
+.showButton{
+    margin-left: auto;
+}
