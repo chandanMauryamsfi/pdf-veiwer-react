@@ -33,7 +33,7 @@ const Appbar = (props) => {
             src="https://img.icons8.com/color/48/000000/grab-tool.png"
           />
         </button>
-        <button className="showButton" onClick={()=> props.setShowSelectedMarks(!props.showSelectedMarks)}>
+        <button className={`showButton ${props.showSelectedMarks ? 'active'  : ''}`} onClick={()=> props.setShowSelectedMarks(!props.showSelectedMarks)}>
             show
         </button>
       </div>

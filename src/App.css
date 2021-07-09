@@ -8,15 +8,12 @@
   padding: 13px;
 }
 
-.pdf-canvas-div{
+.pdf-canvas-div {
   margin-left: auto;
   margin-right: auto;
   overflow: auto;
   border: 1px solid black;
-
 }
-
-
 
 .draggableDIv {
   border: 1px dotted black;
@@ -32,11 +29,15 @@
 
 .confirmationDivHeader {
   background-color: #0a0a52;
-  /* padding: 8px; */
-  top: -25px;
+  top: -32px;
   justify-content: flex-end;
   display: flex;
   position: absolute;
+  height: 31px;
+  align-items: center;
+  border-top-left-radius: 8px;
+  display: flex;
+  border-top-right-radius: 8px;
   width: inherit;
 }
 .addcrosshair {
@@ -44,7 +45,7 @@
   position: relative !important;
 }
 
-.renders{
+.renders {
   border: 1px solid black;
   z-index: 3;
 }

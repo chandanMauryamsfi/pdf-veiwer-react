@@ -184,7 +184,7 @@ function App() {
               <div className="confirmationDivHeader">
                 <button onClick={()=>{
                   saveCordinates()
-                }}>-</button>
+                }}>ok</button>
                 <button
                   onClick={() => (confirmSelectionRef.current.hidden = true)}
                 >
