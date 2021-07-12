@@ -8,9 +8,6 @@ import $ from "jquery";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
 function App() {
-
-  
-
   var canvas = document.getElementsByClassName("react-pdf__Page__canvas")[0];
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
@@ -20,7 +17,6 @@ function App() {
   const [scale, setScale] = useState(1.0);
   const inputEl = useRef();
   const confirmSelectionRef = useRef();
-  const [coOrdinates, setCoOrdinates] = useState([]);
   const [showSelectedMarks, setShowSelectedMarks] = useState(false);
 
   const [cords, setCords] = useState({
@@ -31,11 +27,11 @@ function App() {
   });
 
   useEffect(() => {
-    localStorage.setItem("coords", JSON.stringify(coOrdinates));
-  }, [coOrdinates])
+    localStorage.clear()
+  }, []);
 
   const style = {
-    transform: `scale(${scale + 0.1})`,
+    
   };
 
   const crosshairStyle = {
@@ -68,12 +64,18 @@ function App() {
 
   const saveCordinates = () => {
     confirmSelectionRef.current.hidden = true;
-    console.log(cords.left);
-    setCoOrdinates([
-      ...coOrdinates,
-      [cords.left, cords.top, cords.width, cords.height],
-    ]);
+    var data = getLocalstorageData();
+    if (data) {
+      data.push([cords.left, cords.top, cords.width, cords.height]);
+    } else {
+      data = [[cords.left, cords.top, cords.width, cords.height]];
+    }
+    localStorage.setItem(`coords${pageNumber}`, JSON.stringify(data));
   };
+
+  const getLocalstorageData = () => {
+    return JSON.parse(localStorage.getItem(`coords${pageNumber}`))
+  }
 
   function reCalc() {
     setCordsAndWidthAndHeight(inputEl.current.style);
@@ -105,8 +107,7 @@ function App() {
       var canvasy = $(canvas).offset().top;
       setDragging(true);
       setDragableDiv((pre) => ({
-        x1: darableDiv.x1,
-        y1: darableDiv.y1,
+       ...pre,
         x2: e.clientX - canvasx,
         y2: e.clientY - canvasy,
       }));
@@ -182,9 +183,13 @@ function App() {
               style={style}
             >
               <div className="confirmationDivHeader">
-                <button onClick={()=>{
-                  saveCordinates()
-                }}>ok</button>
+                <button
+                  onClick={() => {
+                    saveCordinates();
+                  }}
+                >
+                  ok
+                </button>
                 <button
                   onClick={() => (confirmSelectionRef.current.hidden = true)}
                 >
@@ -192,23 +197,34 @@ function App() {
                 </button>
               </div>
             </div>
-            {JSON.parse(localStorage.getItem("coords"))
-              ? JSON.parse(localStorage.getItem("coords")).map((val, index) => {
-                  return (
-                    <div
-                      key={index}
-                      className="renders"
-                      style={{
-                        position: `absolute`,
-                        left: val[1],
-                        top: val[0],
-                        width: val[2],
-                        height: val[3],
-                        display: showSelectedMarks ? "block" : "none",
-                      }}
-                    ></div>
-                  );
-                })
+            {getLocalstorageData()
+              ? getLocalstorageData().map(
+                  (val, index) => {
+                    return (
+                      <div
+                        key={index}
+                        className="renders"
+                        style={{
+                          position: `absolute`,
+                          left: val[1],
+                          top: val[0],
+                          width: val[2],
+                          height: val[3],
+                          display: showSelectedMarks ? "block" : "none",
+                          
+                        }}
+                      >
+                        {
+                          // canvas ? <Draw canvas={canvas}
+                          // x={val[1]}
+                          // y={val[0]}
+                          // width={val[2]}
+                          // height={val[3]}/> : ""
+                        }
+                      </div>
+                    );
+                  }
+                )
               : ""}
             <Document file={samplePdf} onLoadSuccess={onDocumentLoadSuccess}>
               <Page pageNumber={pageNumber} scale={scale} />
@@ -221,3 +237,12 @@ function App() {
 }
 
 export default App;
+
+const Draw = (props) => {
+  const ctx = props.canvas.getContext("2d");
+
+  ctx.rect(20, 20, 150, 100);
+  ctx.stroke();
+
+  return <></>;
+};
