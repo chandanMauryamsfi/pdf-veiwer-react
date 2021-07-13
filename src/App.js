@@ -5,6 +5,7 @@ import { Document, Page } from "react-pdf";
 import { pdfjs } from "react-pdf";
 import Appbar from "./Appbar/index";
 import $ from "jquery";
+import sampleimg from "./static/alexander-popov-3InMDrsuYrk-unsplash.jpg"
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
   const [drag, setDrag] = useState(false);
   const [dragging, setDragging] = useState(false);
   const [scale, setScale] = useState(1.0);
+  const [count , setcount] = useState(0);
   const inputEl = useRef();
   const confirmSelectionRef = useRef();
   const [showSelectedMarks, setShowSelectedMarks] = useState(false);
@@ -27,15 +29,25 @@ function App() {
   });
 
   useEffect(() => {
+    if(scale>1.0){
+      setcount(count+1)
+    }
+    
+    
+  }, [scale])
+
+  useEffect(() => {
     localStorage.clear()
   }, []);
 
   const style = {
-    
+    transform : `scale(${scale})`
   };
 
   const crosshairStyle = {
     position: `relative`,
+    transform : `scale(${scale})`,
+    transformOrigin : `0% 0% 0px`
   };
 
   const [darableDiv, setDragableDiv] = useState({
@@ -71,6 +83,7 @@ function App() {
       data = [[cords.left, cords.top, cords.width, cords.height]];
     }
     localStorage.setItem(`coords${pageNumber}`, JSON.stringify(data));
+    console.log(count);
   };
 
   const getLocalstorageData = () => {
@@ -88,8 +101,9 @@ function App() {
     if (grab & confirmSelectionRef.current.hidden) {
       setDrag(true);
       if (canvas) {
-        var canvasx = $(canvas).offset().left;
-        var canvasy = $(canvas).offset().top;
+        const rect = canvas.getBoundingClientRect()
+        var canvasx = rect.left;
+        var canvasy = rect.top;
       }
       confirmSelectionRef.current.hidden = true;
       setDragableDiv((pre) => ({
@@ -103,8 +117,9 @@ function App() {
 
   const onmousemovehandel = (e) => {
     if (drag) {
-      var canvasx = $(canvas).offset().left;
-      var canvasy = $(canvas).offset().top;
+      const rect = canvas.getBoundingClientRect()
+        var canvasx = rect.left;
+        var canvasy = rect.top;
       setDragging(true);
       setDragableDiv((pre) => ({
        ...pre,
@@ -164,7 +179,8 @@ function App() {
       />
 
       <div className={`pdf-container`}>
-        <div className={`pdf-canvas-div`}>
+        <div className={`pdf-canvas-div`} 
+        >
           <div
             onMouseDown={onmousedownhandel}
             onMouseMove={onmousemovehandel}
@@ -180,7 +196,7 @@ function App() {
               ref={confirmSelectionRef}
               className="confirmSelectionDiv"
               hidden={true}
-              style={style}
+              
             >
               <div className="confirmationDivHeader">
                 <button
@@ -227,7 +243,7 @@ function App() {
                 )
               : ""}
             <Document file={samplePdf} onLoadSuccess={onDocumentLoadSuccess}>
-              <Page pageNumber={pageNumber} scale={scale} />
+              <Page pageNumber={pageNumber}/>
             </Document>
           </div>
         </div>
